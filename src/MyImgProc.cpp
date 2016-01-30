@@ -17,11 +17,39 @@ int preproc(cv::VideoCapture cap, ResultSet* result)
   return 0;
 }
 
+static int maxavemat(const cv::Mat& mat, ResultSet* result)
+{
+  long long int ave = 0;
+  int max = INT_MIN;
+  int pix;
+  const int w = mat.cols;
+  const int h = mat.rows;
+
+  for (int y = 0; y < h; ++y)
+  {
+    for (int x = 0; x < w; ++x)
+    {
+      pix = mat.data[y * mat.step + x * mat.elemSize()];
+      if (pix > max)
+      {
+        max = pix;
+      }
+      ave += pix;
+    }
+  }
+  ave /= (w * h);
+  result->diff_ave = static_cast<int>(ave);
+  result->diff_max = max;
+  return 0;
+}
+
 int makeDiff(ResultSet* result)
 {
-
   cv::absdiff(result->gray, result->prev, result->diff);
-  cv::threshold(result->diff, result->diff, THRESH, UCHAR_MAX, CV_THRESH_BINARY);
+  maxavemat(result->diff, result);
+  //cv::threshold(result->diff, result->diff, THRESH, UCHAR_MAX, CV_THRESH_BINARY);
+  
+  cv::Canny(result->diff, result->diff, 30, 180);
 
   for (int i = 0; i < MORPHNUM; ++i)
   {
@@ -32,7 +60,7 @@ int makeDiff(ResultSet* result)
   return 0;
 }
 
-size_t countMat(const cv::Mat mat)
+size_t countMat(const cv::Mat& mat)
 {
   size_t pix = 0;
   const int w = mat.cols;

@@ -7,7 +7,10 @@
 typedef struct ResultSet
 {
   int serial;
-  size_t nPix;
+  size_t nPix;//·•ª‰æ‘œ‚Ì‰æ‘f”
+
+  int diff_max;//·•ªÅ‘å’l
+  int diff_ave;//·•ª•½‹Ï’l
 
   cv::Mat frame;
   cv::Mat gray;

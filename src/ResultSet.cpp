@@ -7,7 +7,9 @@
 
 ResultSet::ResultSet() :
 nPix(0),
-serial(0)
+serial(0),
+diff_ave(0),
+diff_max(0)
 {
   frame = cv::Mat();
   diff = cv::Mat();
@@ -22,9 +24,12 @@ int writelog(FILE* file, ResultSet* result)
     return 1;
   }
   char log[BSIZE];
-  sprintf_s<BSIZE>(log, "%d, %d\n", result->serial, result->nPix);
+  sprintf_s<BSIZE>(log, "%d, %d,", result->serial, result->nPix);
   fprintf_s(file, log);
-
+  sprintf_s<BSIZE>(log, " %d, %d", result->diff_max, result->diff_ave);
+  fprintf_s(file, log);
+  sprintf_s<BSIZE>(log, "\n");
+  fprintf_s(file, log);
   return 0;
 }
 

@@ -9,9 +9,9 @@
 #define THRESH (17)
 #define BSIZE (4096)
 #define WAITKEYMIL (10)
-#define LOGFILE "\\log.txt"
+#define LOGFILE "\\log.csv"
 #define MAX_FRAME (80)
-#define MORPHNUM (3)
+#define MORPHNUM (0)
 
 const DWORD waitmil = (1000 / FPS);
 
