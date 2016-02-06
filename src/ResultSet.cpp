@@ -15,6 +15,10 @@ diff_max(0)
   diff = cv::Mat();
   gray = cv::Mat();
   prev = cv::Mat();
+  for (int i = 0; i < BOUND_RECTNUM; ++i)
+  {
+    boundrect[i] = cv::Rect();
+  }
 }
 
 static int writeBoundRect(cv::Rect bdr[BOUND_RECTNUM], cv::Mat mat)

@@ -50,7 +50,6 @@ int makeDiff(ResultSet* result)
 {
   cv::absdiff(result->gray, result->prev, result->diff);
   maxavemat(result->diff, result);
-  //cv::threshold(result->diff, result->diff, THRESH, UCHAR_MAX, CV_THRESH_BINARY);
 
   const int th1 = MIN(CANNY_TH1, CANNY_TH2);
   const int th2 = MAX(CANNY_TH1, CANNY_TH2);
@@ -61,6 +60,7 @@ int makeDiff(ResultSet* result)
     cv::dilate(result->diff, result->diff, cv::Mat());
     cv::erode(result->diff, result->diff, cv::Mat());
   }
+  
 
   return 0;
 }
@@ -95,14 +95,21 @@ int boundFace(ResultSet* result)
   
   cv::vector<cv::vector<cv::Point> > contourpoly(contours.size());
 
-  for (int i = 0; i < contours.size(); ++i)
+  const int areath = (result->diff.cols * result->diff.rows) / MAX(1, BOUND_TH_C);
+  cv::Rect tmp;
+  for (int i = 0, idx = 0; i < contours.size(); ++i)
   {
-    if (i >= BOUND_RECTNUM)
-    {
-      break;
-    }
-    cv::approxPolyDP(cv::Mat(contours[i]), contourpoly[i], 3, true);
-    result->boundrect[i] = cv::boundingRect(contourpoly[i]);
+     cv::approxPolyDP(cv::Mat(contours[i]), contourpoly[i], 3, true);
+     tmp = cv::boundingRect(contourpoly[i]);
+     if (areath < tmp.area())
+     {
+       result->boundrect[idx] = tmp;
+       ++idx;
+     }
+     if (idx >= BOUND_RECTNUM)
+     {
+       break;
+     }
   }
 
   return 0;

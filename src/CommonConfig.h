@@ -15,7 +15,8 @@
 #define START_FRAME (5)
 #define CANNY_TH1 (25)
 #define CANNY_TH2 (90)
-#define BOUND_RECTNUM (4)
+#define BOUND_RECTNUM (5)
+#define BOUND_TH_C (12)
 
 const DWORD waitmil = (1000 / FPS);
 

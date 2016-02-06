@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   cv::namedWindow("Capture", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
-  cv::namedWindow("Sad", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+  cv::namedWindow("Diff", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 
   ResultSet* result = new ResultSet();
 
