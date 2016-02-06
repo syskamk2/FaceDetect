@@ -11,7 +11,11 @@
 #define WAITKEYMIL (10)
 #define LOGFILE "\\log.csv"
 #define MAX_FRAME (80)
-#define MORPHNUM (0)
+#define MORPHNUM (1)
+#define START_FRAME (5)
+#define CANNY_TH1 (25)
+#define CANNY_TH2 (90)
+#define BOUND_RECTNUM (4)
 
 const DWORD waitmil = (1000 / FPS);
 

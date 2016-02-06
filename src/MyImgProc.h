@@ -10,6 +10,6 @@
 int preproc(cv::VideoCapture cap, ResultSet* result);
 int makeDiff(ResultSet* result);
 size_t countMat(const cv::Mat& mat);
-int contour(cv::Mat& diff);
+int boundFace(ResultSet * result);
 
 #endif

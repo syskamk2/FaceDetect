@@ -13,7 +13,10 @@ int preproc(cv::VideoCapture cap, ResultSet* result)
   cv::cvtColor(result->frame, result->gray, CV_RGB2GRAY);
   result->diff = cv::Mat(result->gray.rows, result->gray.cols, CV_8UC1);
   result->diff = cv::Scalar::all(0);
-
+  for (int i = 0; i < BOUND_RECTNUM; ++i)
+  {
+    result->boundrect[i] = cv::Rect();
+  }
   return 0;
 }
 
@@ -48,8 +51,10 @@ int makeDiff(ResultSet* result)
   cv::absdiff(result->gray, result->prev, result->diff);
   maxavemat(result->diff, result);
   //cv::threshold(result->diff, result->diff, THRESH, UCHAR_MAX, CV_THRESH_BINARY);
-  
-  cv::Canny(result->diff, result->diff, 30, 180);
+
+  const int th1 = MIN(CANNY_TH1, CANNY_TH2);
+  const int th2 = MAX(CANNY_TH1, CANNY_TH2);
+  cv::Canny(result->diff, result->diff, th1, th2);
 
   for (int i = 0; i < MORPHNUM; ++i)
   {
@@ -81,18 +86,24 @@ size_t countMat(const cv::Mat& mat)
 }
 
 //—ÖŠs’Šo
-int contour(cv::Mat& diff)
+int boundFace(ResultSet* result)
 {
-  std::vector<std::vector<cv::Point> > contours;
-  std::vector<cv::Vec4i> hierarchy;
+  cv::vector<cv::vector<cv::Point> > contours;
+  cv::vector<cv::Vec4i> hierarchy;
+  
+  cv::findContours(result->diff, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+  
+  cv::vector<cv::vector<cv::Point> > contourpoly(contours.size());
 
-  cv::findContours(diff, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+  for (int i = 0; i < contours.size(); ++i)
+  {
+    if (i >= BOUND_RECTNUM)
+    {
+      break;
+    }
+    cv::approxPolyDP(cv::Mat(contours[i]), contourpoly[i], 3, true);
+    result->boundrect[i] = cv::boundingRect(contourpoly[i]);
+  }
 
-  cv::Mat contourimg = cv::Mat(diff.rows, diff.cols, CV_8UC1);
-  contourimg = cv::Scalar::all(0);
-  const int idx = -1;
-  cv::drawContours(contourimg, contours, idx, cv::Scalar(UCHAR_MAX), 2);
-
-  imshow("Contour", contourimg);
   return 0;
 }

@@ -17,6 +17,16 @@ diff_max(0)
   prev = cv::Mat();
 }
 
+static int writeBoundRect(cv::Rect bdr[BOUND_RECTNUM], cv::Mat mat)
+{
+  const cv::Scalar rectcol = cv::Scalar(UCHAR_MAX);
+  for (int i = 0; i < BOUND_RECTNUM; ++i)
+  {
+    cv::rectangle(mat, bdr[i], rectcol, 2);
+  }
+  return 0;
+}
+
 int writelog(FILE* file, ResultSet* result)
 {
   if (file == NULL)
@@ -38,8 +48,11 @@ int writeilog(ResultSet* result)
   char fname[BSIZE];
 
   //“ü—Í‰æ‘œ
+  cv::Mat tmp = result->gray.clone();
+  writeBoundRect(result->boundrect, tmp);
+
   sprintf_s<BSIZE>(fname, DATA_DIR "\\img%03d.png", result->serial);
-  cv::imwrite(fname, result->gray);
+  cv::imwrite(fname, tmp);
   
   sprintf_s<BSIZE>(fname, DATA_DIR "\\diff%03d.png", result->serial);
   cv::imwrite(fname, result->diff);
@@ -48,7 +61,10 @@ int writeilog(ResultSet* result)
 }
 int showlog(ResultSet* result)
 {
-  cv::imshow("Capture", result->gray);
+  cv::Mat tmp = result->gray.clone();
+  writeBoundRect(result->boundrect, tmp);
+
+  cv::imshow("Capture", tmp);
   cv::imshow("Diff", result->diff);
 
   cv::waitKey(WAITKEYMIL);

@@ -33,11 +33,12 @@ int main(int argc, char *argv[])
   
   while (1) {
     preproc(cap, result);
-    if (result->serial > 0)
+    //‰f‘œ‚ªˆÀ’è‚µ‚Ä‚©‚çˆ—ŠJŽn
+    if (result->serial > START_FRAME)
     {
       makeDiff(result);
       result->nPix = countMat(result->diff);
-      //contour(diff);
+      boundFace(result);
     }
 
     result->serial++;
